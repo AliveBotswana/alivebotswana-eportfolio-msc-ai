@@ -1,0 +1,95 @@
+# EDA for auto-mpg dataset - Module 1: AI Fundamentals
+# Demonstrates data preprocessing, visualization, and outlier handling
+# Dataset: auto-mpg.csv (fuel efficiency of cars, sourced from UCI ML Repository)
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import scipy.stats as st
+import missingno as msno
+
+# Load dataset (assumes auto-mpg.csv is in data/ folder)
+auto_mpg_df = pd.read_csv('data/auto-mpg.csv')
+
+# Initial exploration
+print("Dataset Info:")
+auto_mpg_df.info()
+print("\nFirst 5 rows:\n", auto_mpg_df.head())
+print("\nLast 5 rows:\n", auto_mpg_df.tail())
+print("\nShape:", auto_mpg_df.shape, "Size:", auto_mpg_df.size)
+
+# Check for missing values ('?')
+for col in auto_mpg_df.columns:
+    if (auto_mpg_df[col] == '?').any():
+        print(f"Column {col} contains '?' values")
+
+# Replace '?' with NaN and convert to numeric
+auto_mpg_df = auto_mpg_df.replace('?', np.nan)
+for col in auto_mpg_df.columns:
+    auto_mpg_df[col] = pd.to_numeric(auto_mpg_df[col], errors='coerce')
+
+# Impute missing values with median
+auto_mpg_df.fillna(auto_mpg_df.median(), inplace=True)
+
+# Visualize missingness
+plt.figure(figsize=(10, 6))
+msno.matrix(auto_mpg_df)
+plt.savefig('module1-ai-fundamentals/missingness_matrix.png')
+plt.close()
+
+# Summary statistics and skewness
+print("\nSummary Statistics:\n", auto_mpg_df.describe())
+print("\nSkewness:\n", auto_mpg_df.skew())
+
+# Boxplot for horsepower
+plt.figure(figsize=(8, 6))
+sns.boxplot(x=auto_mpg_df['horsepower'])
+plt.title('Boxplot of Horsepower')
+plt.savefig('module1-ai-fundamentals/horsepower_boxplot_before.png')
+plt.close()
+
+# Remove outliers using IQR
+Q1 = auto_mpg_df['horsepower'].quantile(0.25)
+Q3 = auto_mpg_df['horsepower'].quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+auto_mpg_df_no_outliers = auto_mpg_df[(auto_mpg_df['horsepower'] >= lower_bound) & (auto_mpg_df['horsepower'] <= upper_bound)]
+
+print(f"Original dataset size: {len(auto_mpg_df)}")
+print(f"After removing outliers: {len(auto_mpg_df_no_outliers)}")
+
+# Boxplot after outlier removal
+plt.figure(figsize=(8, 6))
+sns.boxplot(x=auto_mpg_df_no_outliers['horsepower'])
+plt.title('Boxplot of Horsepower - After Outlier Removal')
+plt.savefig('module1-ai-fundamentals/horsepower_boxplot_after.png')
+plt.close()
+
+# Histogram for horsepower
+plt.figure(figsize=(8, 6))
+sns.histplot(auto_mpg_df['horsepower'], bins=30, kde=True)
+plt.title('Horsepower Distribution')
+plt.savefig('module1-ai-fundamentals/horsepower_histogram.png')
+plt.close()
+
+# Correlation heatmap
+corr_matrix = auto_mpg_df.corr()
+plt.figure(figsize=(10, 8))
+sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", linewidths=0.5, square=True)
+plt.title("Correlation Heatmap of auto_mpg_df Numeric Features")
+plt.savefig('module1-ai-fundamentals/correlation_heatmap.png')
+plt.close()
+
+# Scatter plot: MPG vs Horsepower
+plt.figure(figsize=(8, 6))
+plt.scatter(auto_mpg_df['mpg'], auto_mpg_df['horsepower'], alpha=0.6)
+plt.title('Scatter Plot of MPG vs Horsepower')
+plt.xlabel('MPG')
+plt.ylabel('Horsepower')
+plt.savefig('module1-ai-fundamentals/mpg_vs_horsepower_scatter.png')
+plt.close()
+
+# Kurtosis
+print("\nKurtosis:\n", auto_mpg_df.kurtosis())
