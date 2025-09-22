@@ -1,0 +1,51 @@
+#The Jaccard Coefficient: 
+
+#DATASET: 
+The following table presents the pathological test results for three individuals. The attributes include Name, Gender, and various test results (Fever, Cough, Test-1, Test-2, Test-3, Test-4).
+
+Name,Gender,Fever,Cough,Test-1,Test-2,Test-3,Test-4
+Jack,M,Y,N,P,N,N,A
+Mary,F,Y,N,P,A,P,N
+Jim,M,Y,P,N,N,N,A
+
+#Task: Jaccard Coefficient calculation:
+Calculate the Jaccard coefficient (similarity measure) for the following pairs, focusing on the asymmetric binary attributes (Fever, Cough, Test-1, Test-2, Test-3, Test-4). Convert Y/P to 1 (presence/abnormal) and N/A to 0 (absence/normal). 
+(Jack, Mary)
+(Jack, Jim)
+(Jim, Mary)
+
+#Formula Reminder:
+Jaccard Similarity = $\frac{f_{11}}{f_{11} + f_{10} + f_{01}}$, where:
+
+$f_{11}$: Number of attributes where both are 1.
+$f_{10}$: Number where first is 1 and second is 0.
+$f_{01}$: Number where first is 0 and second is 1.
+(Ignore $f_{00}$ as it's not meaningful for asymmetric data.)
+
+#ANSWER: 
+Individual,Fever,Cough,Test-1,Test-2,Test-3,Test-4
+Jack,1,0,1,0,0,0
+Mary,1,0,1,0,1,0
+Jim,1,1,0,0,0,0
+
+Pairwise results:
+
+(Jack, Mary): $ f_{11} = 2 $ (Fever, Test-1), $ f_{10} = 0 $, $ f_{01} = 1 $ (Test-3).
+            Jaccard = 2 / (2 + 0 + 1) = 2/3 ≈ 0.6667
+
+(Jack, Jim):$ f_{11} = 1 $ (Fever), $ f_{10} = 1 $ (Test-1), $ f_{01} = 1 $ (Cough).
+            Jaccard = 1 / (1 + 1 + 1) = 1/3 ≈ 0.3333
+(Jim, Mary):$ f_{11} = 1 $ (Fever), $ f_{10} = 1 $ (Cough), $ f_{01} = 2 $ (Test-1, Test-3).
+            Jaccard = 1 / (1 + 1 + 2) = 1/4 = 0.25
+
+DISCUSSION: 
+Articulate the Legal, Social, Ethical, and Professional Issues Faced by Machine Learning ProfessionalsMachine learning (ML) professionals encounter multifaceted 
+issues across legal, social, ethical, and professional domains, especially when handling sensitive data like health records in this pathological dataset.
+
+Legal Issues: Machine Learning is a discipline heavily reliant on data handling and processing. Machine Learning applications must comply with data protection 
+regulations, such as the General Data Protection Regulation (GDPR) in the EU or the Health Insurance Portability and Accountability Act (HIPAA) in the US, which 
+classify health data as sensitive and mandate explicit consent, anonymization, and secure processing to prevent breaches. These regulations provide a more objective
+framework that ensures the introduction and use of AI/ML minimizes risks of bias or error, protects patient well-being, safeguards privacy, and promotes accountability.
+Liability arises if ML models cause harm, such as misdiagnosis, raising questions about accountability for algorithmic decisions. Privacy laws challenge AI use, as 
+models trained on personal data risk re-identification, even in aggregated forms like similarity coefficients. In hiring or healthcare, legal risks include discrimination 
+claims if biased data violates equality laws.
